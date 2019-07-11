@@ -365,6 +365,16 @@ app.parseFASTA = function(text, callback){
   computer.postMessage(text);
 };
 
+app.parseMEGA = function(text, callback){
+  var computer = new Worker('scripts/parse-mega.js');
+  computer.onmessage = function(response){
+    var nodes = JSON.parse(app.decoder.decode(new Uint8Array(response.data.nodes)));
+    console.log('MEGA Transit time: ', (Date.now()-response.data.start).toLocaleString(), 'ms');
+    if(callback) callback(nodes);
+  };
+  computer.postMessage(text);
+};
+
 app.r01 = Math.random;
 
 // ported from https://github.com/CDCgov/SeqSpawnR/blob/91d5857dbda5998839a002fbecae0f494dca960a/R/SequenceSpawner.R
